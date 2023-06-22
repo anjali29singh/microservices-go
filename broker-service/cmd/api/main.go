@@ -6,9 +6,10 @@ import (
 	"net/http"
 )
 
-const webPort = "80"
+const webPort = "8000"
 
-type Config struct {}
+type Config struct {
+}
 
 func main() {
 	app := Config{}
@@ -17,7 +18,7 @@ func main() {
 
 	// define http server
 	srv := &http.Server{
-		Addr: fmt.Sprintf(":%s", webPort),
+		Addr:    fmt.Sprintf(":%s", webPort),
 		Handler: app.routes(),
 	}
 
