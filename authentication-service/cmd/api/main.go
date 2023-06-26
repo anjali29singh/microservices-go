@@ -7,6 +7,11 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
+
+	_ "github.com/jackc/pgconn"
+	_ "github.com/jackc/pgx/v4"
+	_ "github.com/jackc/pgx/v4/stdlib"
 )
 
 const webPort = "8000"
@@ -23,8 +28,16 @@ func main() {
 
 	//Todo connect to DB
 
+	conn := connectToDB()
+	if conn == nil {
+		log.Panic("Can't connect to Postgres")
+	}
+
 	//set up config
-	app := Config{}
+	app := Config{
+		DB:     conn,
+		Models: data.New(conn),
+	}
 
 	srv := &http.Server{
 		Addr:    fmt.Sprintf("localhost:%s", webPort),
@@ -37,6 +50,7 @@ func main() {
 }
 
 func openDB(dsn string) (*sql.DB, error) {
+
 	//open a connection to databse
 	//dsn databse connection string
 	db, err := sql.Open("pgx", dsn)
@@ -68,5 +82,8 @@ func connectToDB() *sql.DB {
 			log.Println(err)
 			return nil
 		}
+		log.Println("Backing off for 2 seconds ..")
+		time.Sleep(2 * time.Second)
+		continue
 	}
 }
