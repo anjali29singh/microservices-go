@@ -24,7 +24,7 @@ services:
       mode: replicated
       replicas: 1
     env_file:
-      - .env
+      - ./../.env
     environment:
       - DSN="host=postgres port=5432 user=${POSTGRES_USER} password=${POSTGRES_USER} dbname=users sslmode=disable timezone=UTC connect_timeout=5"
 
