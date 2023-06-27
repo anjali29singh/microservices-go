@@ -4,7 +4,7 @@ services:
   broker-service:
     build:
       context: ./../broker-service
-      dockerfile: ./../broker-service/broker-service.Dockerfile
+      dockerfile: ./../broker-service/broker-service.dockerfile
 
     restart: always
     ports:
@@ -12,6 +12,22 @@ services:
     deploy:
       mode: replicated
       replicas: 1
+
+  authentication-service:
+    build:
+      context: ./../authentication-service
+      dockerfile: ./../authentication-service/authentication-service.dockerfile
+    restart : always
+    ports:
+      - "8081:8081"
+    deploy:
+      mode: replicas
+      replicas: 1
+    env_file:
+      - .env
+    environment:
+      - DSN="host=postgres port=5432 user=${POSTGRES_USER} password=${POSTGRES_USER} dbname=users sslmode=disable timezone=UTC connect_timeout=5"
+
   postgres:
     image: "postgres:14.0"
     ports:
@@ -27,4 +43,4 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: users
     volumes:
-      - ./db-data/postgres/: /var/lib/postgres/data
+      - ./db-data/postgres/:/var/lib/postgres/data
