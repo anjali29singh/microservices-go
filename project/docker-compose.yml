@@ -17,11 +17,11 @@ services:
     build:
       context: ./../authentication-service
       dockerfile: ./../authentication-service/authentication-service.dockerfile
-    restart : always
+    restart: always
     ports:
       - "8081:8081"
     deploy:
-      mode: replicas
+      mode: replicated
       replicas: 1
     env_file:
       - .env
