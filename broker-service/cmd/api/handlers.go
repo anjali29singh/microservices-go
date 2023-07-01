@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
 	"errors"
 	"net/http"
 )
@@ -48,9 +50,27 @@ func (app *Config) authenticate(w http.ResponseWriter, a AuthPayload) {
 
 	//create json we'll send to auth microservice
 
-	// jsonData ,_ :=
+	jsonData, _ := json.MarshalIndent(a, "", "\t")
 
 	//call the service
 
+	request, err := http.NewRequest("POST", "http://authentication-service/authenticate", bytes.NewBuffer(jsonData))
+
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	client := &http.Client{}
+
+	response, err := client.Do(request)
+
+	if err != nil {
+		app.errorJSON(w, err)
+
+	}
+
+	defer response.Body.Close()
 	//make sure we get back the correct status
+
 }
